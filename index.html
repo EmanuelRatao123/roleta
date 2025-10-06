@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleta dos Brainrots</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Bangers', cursive;
+            background: #1a0000 url('https://media.giphy.com/media/3o7aD4GrHwn8vsGBTa/giphy.gif') center/cover;
+            background-blend-mode: multiply;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px 40px;
+            border-radius: 25px;
+            border: 5px solid #ffd700;
+            box-shadow: 0 0 30px #ff8c00, 0 0 60px #ff0000, inset 0 0 20px #ff4500;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+            animation: rainbow-text 5s ease infinite;
+            margin-bottom: 20px;
+        }
+
+        .roulette-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            margin: 30px auto;
+        }
+
+        .wheel {
+            --s: 350px; /* Tamanho da roleta */
+            --b: 10px;  /* Largura da borda */
+            --c1: #ffd700; /* Ouro */
+            --c2: #e74c3c; /* Vermelho Fogo */
+            --c3: #3498db; /* Azul Diamante */
+            --c4: #ffffff; /* Branco Yin Yang */
+
+            position: relative;
+            width: var(--s);
+            height: var(--s);
+            border-radius: 50%;
+            border: var(--b) solid #ffd700;
+            background: conic-gradient(
+                var(--c1) 0% 25%,
+                var(--c2) 25% 50%,
+                var(--c3) 50% 75%,
+                var(--c4) 75% 100%
+            );
+            box-shadow: 0 0 20px #ffd700, inset 0 0 15px rgba(0,0,0,0.5);
+            transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+            list-style: none; /* Remove bolinhas da lista */
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .wheel li {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* A mágica está aqui: */
+            clip-path: polygon(50% 50%, 0 0, 100% 0);
+            transform-origin: 50% 50%;
+        }
+
+        .wheel li .text {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            padding-top: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+            color: black;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+        }
+
+        /* Ajusta cor do texto para fatias escuras */
+        .wheel li:nth-child(2) .text,
+        .wheel li:nth-child(3) .text {
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+
+        .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 40px solid #ffd700;
+            filter: drop-shadow(0px -5px 5px #ff8c00);
+            z-index: 10;
+        }
+
+        .spin-button {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            padding: 15px 40px;
+            cursor: pointer;
+            border: 5px solid #ffd700;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #ff4500, #ff8c00);
+            color: white;
+            text-shadow: 3px 3px 0 #a52a2a, 5px 5px 10px rgba(0,0,0,0.8);
+            box-shadow: 0 0 20px #ff4500, 0 0 30px #ff0000;
+            transition: all 0.2s ease;
+        }
+
+        .spin-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #ff8c00, 0 0 45px #ff0000;
+        }
+
+        .spin-button:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes rainbow-text {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Roleta dos Brainrots</h1>
+
+        <div class="roulette-container">
+            <div class="pointer"></div>
+            <!-- A roleta agora é uma lista (ul) -->
+            <ul class="wheel" id="wheel">
+                <li style="transform: rotate(45deg)">
+                    <div class="text">Lá grande gold com meteoro</div>
+                </li>
+                <li style="transform: rotate(135deg)">
+                    <div class="text">chicleteira diamante com fogo</div>
+                </li>
+                <li style="transform: rotate(225deg)">
+                    <div class="text">garama gold com chapéu</div>
+                </li>
+                <li style="transform: rotate(315deg)">
+                    <div class="text">spaguetti tualeti yin yang</div>
+                </li>
+            </ul>
+        </div>
+
+        <button class="spin-button" id="spinButton">Girar!</button>
+    </div>
+
+    <script>
+        const spinButton = document.getElementById('spinButton');
+        const wheel = document.getElementById('wheel');
+        const robloxLink = 'https://www.roblox.com/share?code=997fea569b607b459482c54a4454ec9d&type=Server';
+
+        spinButton.addEventListener('click', () => {
+            // Animação de giro
+            const randomDegrees = 360 * 5 + Math.floor(Math.random() * 360);
+            wheel.style.transform = `rotate(${randomDegrees}deg)`;
+
+            // Redireciona para o link após a animação
+            setTimeout(() => {
+                window.location.href = robloxLink;
+            }, 2000); // Espera 2 segundos antes de redirecionar
+        });
+    </script>
+
+</body>
+</html>
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            color: #000000; /* Cor padrão preta */
+            text-shadow: none;
+            /* Remove o clip-path que estava escondendo o texto */
+        }
+
+        /* Cor do texto para a fatia azul */
+        .slice:nth-child(3) { color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
+        /* Cor do texto para a fatia branca */
+        .slice:nth-child(4) { color: #000; text-shadow: none; }
+
+        .slice-text {
+            /* Posiciona o texto no meio da fatia de forma confiável */
+            width: 110px;
+            transform: rotate(45deg) translate(75px); /* Puxa o texto mais para o centro */
+        }
+
+        .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 40px solid #ffd700;
+            filter: drop-shadow(0px -5px 5px #ff8c00);
+        }
+
+        .spin-button {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            padding: 15px 40px;
+            cursor: pointer;
+            border: 5px solid #ffd700;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #ff4500, #ff8c00);
+            color: white;
+            text-shadow: 3px 3px 0 #a52a2a, 5px 5px 10px rgba(0,0,0,0.8);
+            box-shadow: 0 0 20px #ff4500, 0 0 30px #ff0000;
+            transition: all 0.2s ease;
+        }
+
+        .spin-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #ff8c00, 0 0 45px #ff0000;
+        }
+
+        .spin-button:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes rainbow-text {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Roleta dos Brainrots</h1>
+
+        <div class="roulette-container">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel">
+                <!-- Opções da Roleta -->
+                <div class="slice" style="transform: rotate(0deg);">
+                    <div class="slice-text">Lá grande gold com meteoro</div></div>
+                <div class="slice" style="transform: rotate(90deg);">
+                    <div class="slice-text">chicleteira diamante com fogo</div></div>
+                <div class="slice" style="transform: rotate(180deg);">
+                    <div class="slice-text">garama gold com chapéu</div></div>
+                <div class="slice" style="transform: rotate(270deg);"><div class="slice-text">spaguetti tualeti yin yang</div></div>
+            </div>
+        </div>
+
+        <button class="spin-button" id="spinButton">Girar!</button>
+    </div>
+
+    <script>
+        const spinButton = document.getElementById('spinButton');
+        const wheel = document.getElementById('wheel');
+        const robloxLink = 'https://www.roblox.com/share?code=997fea569b607b459482c54a4454ec9d&type=Server';
+
+        spinButton.addEventListener('click', () => {
+            // Animação de giro
+            const randomDegrees = 360 * 5 + Math.floor(Math.random() * 360);
+            wheel.style.transform = `rotate(${randomDegrees}deg)`;
+
+            // Redireciona para o link após a animação
+            setTimeout(() => {
+                window.location.href = robloxLink;
+            }, 2000); // Espera 2 segundos antes de redirecionar
+        });
+    </script>
+
+</body>
+</html>
